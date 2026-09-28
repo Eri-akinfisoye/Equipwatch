@@ -9,7 +9,7 @@
 
 ## Who This Is About
 
-**Name:** Ericson Akinfisoye
+**Name:** Erioluwa Akinfisoye
 **Background:** Final-year Mechanical Engineering student at FUTA (Federal University of Technology, Akure), First Class standing. Completed industrial placement at Nigerian Breweries with exposure to maintenance engineering and industrial KPIs.
 **Career direction:** Industrial Data Analyst → Industrial/Manufacturing Data Scientist. Leveraging mechanical engineering domain knowledge as a differentiator in the data analytics space.
 **GitHub:** https://github.com/Eri-akinfisoye
