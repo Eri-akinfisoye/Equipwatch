@@ -231,7 +231,7 @@ Open `dashboard/equipwatch.pbix` and update the PostgreSQL connection string to 
 
 **Erioluwa Akinfisoye**
 Mechanical Engineer | Industrial Data Analyst
-[GitHub](https://github.com/yourusername) | [LinkedIn](https://linkedin.com/in/yourprofile)
+[GitHub](https://github.com/Eri-akinfisoye) | [LinkedIn](https://www.linkedin.com/in/erioluwa-akinfisoye/)
 
 ---
 
