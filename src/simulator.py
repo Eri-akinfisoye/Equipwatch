@@ -208,7 +208,7 @@ if __name__ == '__main__':
     # Generate the full fleet dataset — 200 readings × 5 machines = 1000 rows
     df_raw = simulate_fleet(n_readings=200)
 
-    # Quick sanity check before saving: confirm shape and preview first rows
+    # Quick check before saving: confirm shape and preview first rows
     print('Shape:', df_raw.shape)
     print(df_raw.head())
 

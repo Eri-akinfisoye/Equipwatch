@@ -14,3 +14,6 @@ data/
 
 # VS Code settings
 .vscode/
+
+# another.ipynb file
+another.ipynb

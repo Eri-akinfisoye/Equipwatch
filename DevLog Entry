@@ -1,0 +1,16 @@
+## 2026-09-28 — Phase 1 Complete
+
+- Built EQUIPMENT_PROFILES dictionary for 5 machines with normal operating parameters
+- Written generate_readings() — generates normally distributed sensor data per machine
+- Written inject_fault() — injects progressive linear fault ramp into last 20% of readings
+- Written simulate_fleet() — combines all 5 machines, injects faults into MOTOR_1 and PUMP_2
+- Fixed return-inside-loop bug in simulate_fleet() during review
+- Fixed timestamp offset so each machine starts at a slightly different second (realistic)
+- Added np.random.seed(42) for reproducibility
+- Fixed CSV export path using os.path.abspath(__file__) for cross-machine compatibility
+- Added os.makedirs(exist_ok=True) so data/ folder auto-creates on any machine
+- Switched from conda to uv for environment management — significantly faster
+- Initialised Git repo and pushed to GitHub
+- Full commented version of simulator.py complete
+
+Next: Phase 2 — PostgreSQL schema design and data ingestion (processor.py + db.py)
