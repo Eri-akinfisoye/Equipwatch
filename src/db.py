@@ -1,67 +1,60 @@
 import psycopg2
 import os
 from dotenv import load_dotenv
+from psycopg2.extras import execute_values
 
 
 """ 
-This is resposnisble for connecting the simulator.py file to the database (postgres). It pushes the CSV file 
+This is responsible for connecting to the database (postgres) and inserting sensor readings.
 """
-#load the env variables 
+# Load the env variables
 load_dotenv()
 
+
 def get_connection():
-    
-    #load the env variables 
-    
-
     try:
-
-        #creates the connection line to the database
+        # Creates the connection line to the database
         conn = psycopg2.connect(
-            dbname = os.getenv("DB_NAME"),
-            user = os.getenv("DB_USER"),
-            password = os.getenv("DB_PASSWORD"),
-            host = os.getenv("DB_HOST"),
-            port = os.getenv("DB_PORT")
+            dbname=os.getenv("DB_NAME"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            host=os.getenv("DB_HOST"),
+            port=os.getenv("DB_PORT")
         )
-
-    except  Exception as error:
-        print(f'This is the error {error}')
-
+    except Exception as error:
+        print(f'This is the error: {error}')
         return None
-    
     return conn
 
 
 def create_table():
-
     conn = get_connection()
-
     try:
         with conn:
             with conn.cursor() as cursor:
-
-                table_script = (
-                    """ CREATE TABLE IF NOT EXISTS sensor_readings(
-                            id SERIAL PRIMARY KEY,
-                            timestamp TIMESTAMP,
-                            equipment VARCHAR(50),
-                            section VARCHAR(10),
-                            current FLOAT,
-                            temp FLOAT,
-                            vibration FLOAT,
-                            inserted_at TIMESTAMP DEFAULT NOW()
-                            );
-                    """
-                )
+                table_script = """
+                    CREATE TABLE IF NOT EXISTS sensor_readings(
+                        id SERIAL PRIMARY KEY,
+                        timestamp TIMESTAMP,
+                        equipment VARCHAR(50),
+                        section VARCHAR(20),
+                        current FLOAT,
+                        temp FLOAT,
+                        vibration FLOAT,
+                        current_baseline FLOAT,
+                        temp_baseline FLOAT,
+                        current_deviation_pct FLOAT,
+                        temp_deviation_pct FLOAT,
+                        power_kw FLOAT,
+                        anomaly VARCHAR(20),
+                        status VARCHAR(20),
+                        inserted_at TIMESTAMP DEFAULT NOW()
+                    );
+                """
                 cursor.execute(table_script)
-
-                print("------Table ready-----")
+                print("------Table ready (14 columns)-----")
     finally:
         conn.close()
-
-import psycopg2
-from psycopg2.extras import execute_values
 
 
 def insert_readings(df):
@@ -69,7 +62,6 @@ def insert_readings(df):
     try:
         conn = get_connection()
 
-        # 1. Collect all row tuples into a list
         rows = []
         for _, row in df.iterrows():
             value = (
@@ -79,24 +71,33 @@ def insert_readings(df):
                 row["current"],
                 row["temp"],
                 row["vibration"],
+                row.get("current_baseline"),      # NEW
+                row.get("temp_baseline"),         # NEW
+                row.get("current_deviation_pct"), # NEW
+                row.get("temp_deviation_pct"),    # NEW
+                row.get("power_kw"),              # NEW
+                row.get("anomaly"),               # NEW
+                row.get("status"),                # NEW
             )
             rows.append(value)
 
-        # 2. Define the SQL query outside the loop
         insert_script = """
-            INSERT INTO sensor_readings (timestamp, equipment, section, current, temp, vibration)
+            INSERT INTO sensor_readings (
+                timestamp, equipment, section, current, temp, vibration,
+                current_baseline, temp_baseline,
+                current_deviation_pct, temp_deviation_pct,
+                power_kw, anomaly, status
+            )
             VALUES %s;
         """
 
-        # 3. Execute the batch insert
         with conn:
             with conn.cursor() as cursor:
                 execute_values(cursor, insert_script, rows)
 
-        print(f"{len(df)} rows inserted.")
+        print(f"{len(df)} rows inserted with all engineered features.")
 
     finally:
-        # Safely close connection if it was successfully opened
         if conn:
             conn.close()
 
